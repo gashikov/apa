@@ -1,0 +1,176 @@
+<!-- ========== index.html (ГЛАВНАЯ - ПОИСК) ========== -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SWILL OSINT</title>
+    <style>
+        :root {
+            --bg: #0d1117; --card: #161b22; --border: #30363d;
+            --blue: #58a6ff; --green: #238636; --orange: #f0883e;
+            --red: #da3633; --text: #c9d1d9; --sub: #8b949e; --radius: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg); color: var(--text);
+            min-height: 100vh; padding-bottom: 70px;
+        }
+        .header {
+            background: linear-gradient(180deg, #1c2333, #161b22);
+            border-bottom: 1px solid var(--border);
+            padding: 20px 16px; text-align: center;
+            position: sticky; top: 0; z-index: 10;
+        }
+        .logo { font-size: 40px; }
+        .title { font-size: 24px; font-weight: 800; color: var(--blue); }
+        .subtitle { font-size: 11px; color: var(--sub); margin-top: 2px; }
+        .container { padding: 16px; max-width: 600px; margin: 0 auto; }
+        .card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 16px; margin-bottom: 12px;
+        }
+        .section-label {
+            font-size: 10px; text-transform: uppercase; letter-spacing: 1px;
+            color: var(--sub); margin-bottom: 10px; font-weight: 600;
+        }
+        .type-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+        .type-btn {
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: 10px; padding: 12px 8px; text-align: center;
+            cursor: pointer; transition: all 0.15s;
+        }
+        .type-btn .icon { font-size: 24px; display: block; margin-bottom: 2px; }
+        .type-btn .label { font-size: 10px; color: var(--sub); }
+        .type-btn.active { border-color: var(--blue); background: #1c2333; }
+        .type-btn.active .label { color: var(--blue); }
+        .input-box {
+            width: 100%; background: var(--bg); border: 1.5px solid var(--border);
+            border-radius: 10px; padding: 12px; color: var(--text); font-size: 15px;
+            outline: none; margin-top: 10px;
+        }
+        .input-box:focus { border-color: var(--blue); }
+        .input-box::placeholder { color: #484f58; }
+        .btn {
+            background: var(--green); color: white; border: none;
+            border-radius: 10px; padding: 14px; font-size: 15px;
+            font-weight: 600; cursor: pointer; width: 100%; margin-top: 10px;
+        }
+        .btn:active { background: #2ea043; }
+        .btn-blue { background: var(--blue); }
+        .btn-red { background: var(--red); }
+        .history-item {
+            display: flex; align-items: center; padding: 8px;
+            background: var(--bg); border-radius: 8px; margin: 4px 0;
+            cursor: pointer; font-size: 12px;
+        }
+        .history-item .icon { margin-right: 8px; font-size: 16px; }
+        .history-item .query { flex: 1; }
+        .history-item .time { color: var(--sub); font-size: 10px; }
+        .nav-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--card); border-top: 1px solid var(--border);
+            padding: 10px 16px; display: flex; justify-content: space-around;
+            z-index: 10;
+        }
+        .nav-item {
+            text-align: center; cursor: pointer; color: var(--sub);
+            font-size: 10px; text-decoration: none;
+        }
+        .nav-item .icon { font-size: 20px; display: block; }
+        .nav-item.active { color: var(--blue); }
+        .badge {
+            display: inline-block; background: #1f6feb33; color: var(--blue);
+            border: 1px solid #1f6feb66; border-radius: 6px;
+            padding: 2px 7px; font-size: 10px; margin: 2px;
+        }
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8); z-index: 100;
+            justify-content: center; align-items: center;
+        }
+        .modal.show { display: flex; }
+        .modal-content {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 24px; width: 90%;
+            max-width: 400px; text-align: center;
+        }
+        .spinner {
+            border: 3px solid var(--border); border-top: 3px solid var(--blue);
+            border-radius: 50%; width: 32px; height: 32px;
+            animation: spin 0.8s linear infinite; margin: 0 auto 12px;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">🕵️</div>
+        <div class="title">SWILL OSINT</div>
+        <div class="subtitle">Профессиональный поиск • v3.0</div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="section-label">📋 ТИП ПОИСКА</div>
+            <div class="type-grid">
+                <div class="type-btn active" data-type="auto">
+                    <span class="icon">🔍</span><span class="label">Авто</span>
+                </div>
+                <div class="type-btn" data-type="phone">
+                    <span class="icon">📱</span><span class="label">Телефон</span>
+                </div>
+                <div class="type-btn" data-type="email">
+                    <span class="icon">📧</span><span class="label">Email</span>
+                </div>
+                <div class="type-btn" data-type="vk">
+                    <span class="icon">🔷</span><span class="label">VK</span>
+                </div>
+                <div class="type-btn" data-type="tg">
+                    <span class="icon">📨</span><span class="label">Telegram</span>
+                </div>
+                <div class="type-btn" data-type="photo">
+                    <span class="icon">🖼️</span><span class="label">Фото</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="section-label">✏️ ВВЕДИТЕ ДАННЫЕ</div>
+            <input type="text" class="input-box" id="queryInput" placeholder="Номер, email, @username или VK ID..." autofocus autocomplete="off">
+            <button class="btn" id="searchBtn">🔍 ИСКАТЬ</button>
+        </div>
+
+        <div class="card" id="historyCard" style="display:none">
+            <div class="section-label">🕐 ИСТОРИЯ</div>
+            <div id="historyList"></div>
+            <button class="btn" style="background:var(--card);border:1px solid var(--border);color:var(--text);font-size:12px;margin-top:8px" onclick="clearHistory()">🗑️ Очистить</button>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <a href="index.html" class="nav-item active">
+            <span class="icon">🔍</span> Поиск
+        </a>
+        <a href="admin.html" class="nav-item">
+            <span class="icon">⚙️</span> Админ
+        </a>
+        <a href="profile.html" class="nav-item">
+            <span class="icon">👤</span> Профиль
+        </a>
+    </div>
+
+    <div class="modal" id="loadingModal">
+        <div class="modal-content">
+            <div class="spinner"></div>
+            <p>Ищу информацию...</p>
+            <p style="font-size:11px;color:var(--sub)">Открываю бота</p>
+        </div>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
