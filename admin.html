@@ -1,0 +1,167 @@
+<!-- ========== admin.html (АДМИН-ПАНЕЛЬ) ========== -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SWILL - Админ</title>
+    <style>
+        :root {
+            --bg: #0d1117; --card: #161b22; --border: #30363d;
+            --blue: #58a6ff; --green: #238636; --orange: #f0883e;
+            --red: #da3633; --text: #c9d1d9; --sub: #8b949e; --radius: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg); color: var(--text);
+            min-height: 100vh; padding-bottom: 70px;
+        }
+        .header {
+            background: linear-gradient(180deg, #1c2333, #161b22);
+            border-bottom: 1px solid var(--border);
+            padding: 16px; text-align: center;
+            position: sticky; top: 0; z-index: 10;
+        }
+        .title { font-size: 22px; font-weight: 800; color: var(--orange); }
+        .subtitle { font-size: 11px; color: var(--sub); }
+        .container { padding: 16px; max-width: 600px; margin: 0 auto; }
+        .card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 14px; margin-bottom: 10px;
+        }
+        .card-title { font-size: 14px; font-weight: 600; color: var(--blue); margin-bottom: 8px; }
+        .card-text { font-size: 12px; color: var(--sub); word-break: break-all; }
+        .row { display: flex; gap: 8px; margin: 6px 0; flex-wrap: wrap; }
+        .btn {
+            background: var(--green); color: white; border: none;
+            border-radius: 8px; padding: 10px 16px; font-size: 12px;
+            font-weight: 600; cursor: pointer; flex: 1; min-width: 80px;
+        }
+        .btn:active { background: #2ea043; }
+        .btn-blue { background: var(--blue); }
+        .btn-red { background: var(--red); }
+        .btn-gray { background: var(--card); border: 1px solid var(--border); color: var(--text); }
+        .input-box {
+            width: 100%; background: var(--bg); border: 1.5px solid var(--border);
+            border-radius: 8px; padding: 10px; color: var(--text); font-size: 13px;
+            outline: none; margin: 6px 0;
+        }
+        .input-box:focus { border-color: var(--blue); }
+        textarea {
+            width: 100%; background: var(--bg); border: 1.5px solid var(--border);
+            border-radius: 8px; padding: 10px; color: var(--text); font-size: 11px;
+            outline: none; margin: 6px 0; height: 200px; font-family: monospace;
+            resize: vertical;
+        }
+        textarea:focus { border-color: var(--blue); }
+        .nav-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--card); border-top: 1px solid var(--border);
+            padding: 10px 16px; display: flex; justify-content: space-around;
+            z-index: 10;
+        }
+        .nav-item { text-align: center; color: var(--sub); font-size: 10px; text-decoration: none; }
+        .nav-item .icon { font-size: 20px; display: block; }
+        .nav-item.active { color: var(--blue); }
+        .status { font-size: 10px; padding: 4px 8px; border-radius: 6px; }
+        .status-ok { background: #23863633; color: var(--green); }
+        .status-err { background: #da363333; color: var(--red); }
+        .tabs { display: flex; gap: 4px; margin-bottom: 10px; overflow-x: auto; }
+        .tab {
+            background: var(--bg); border: 1px solid var(--border);
+            border-radius: 8px; padding: 8px 12px; font-size: 11px;
+            color: var(--sub); cursor: pointer; white-space: nowrap;
+        }
+        .tab.active { border-color: var(--blue); color: var(--blue); }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="title">⚙️ АДМИН-ПАНЕЛЬ</div>
+        <div class="subtitle">Управление ботом</div>
+    </div>
+
+    <div class="container">
+        <!-- Статус -->
+        <div class="card">
+            <div class="card-title">📊 Статус</div>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <span class="status status-ok">🟢 Бот онлайн</span>
+                <span class="status status-ok">📱 Сессия активна</span>
+                <span id="reqCount" class="status status-ok">📊 Запросов: 0</span>
+            </div>
+        </div>
+
+        <!-- Вкладки -->
+        <div class="tabs">
+            <div class="tab active" onclick="switchTab('files')">📁 Файлы</div>
+            <div class="tab" onclick="switchTab('tokens')">🔑 Токены</div>
+            <div class="tab" onclick="switchTab('session')">📱 Сессия</div>
+            <div class="tab" onclick="switchTab('restart')">🔄 Перезапуск</div>
+        </div>
+
+        <!-- Файлы -->
+        <div class="tab-content active" id="tab-files">
+            <div class="card">
+                <div class="card-title">📁 Выберите файл</div>
+                <div class="row">
+                    <button class="btn btn-gray" onclick="loadFile('bot.py')">bot.py</button>
+                    <button class="btn btn-gray" onclick="loadFile('config.py')">config.py</button>
+                    <button class="btn btn-gray" onclick="loadFile('swill_telegram.py')">swill_tg.py</button>
+                    <button class="btn btn-gray" onclick="loadFile('swill_vk.py')">swill_vk.py</button>
+                    <button class="btn btn-gray" onclick="loadFile('swill_phone.py')">swill_phone.py</button>
+                </div>
+                <textarea id="fileContent" placeholder="Выберите файл для редактирования..."></textarea>
+                <button class="btn btn-blue" onclick="saveFile()">💾 Сохранить</button>
+            </div>
+        </div>
+
+        <!-- Токены -->
+        <div class="tab-content" id="tab-tokens">
+            <div class="card">
+                <div class="card-title">🔑 Управление токенами</div>
+                <select id="tokenSelect" class="input-box">
+                    <option value="BOT_TOKEN">BOT_TOKEN</option>
+                    <option value="VK_TOKENS">VK_TOKENS</option>
+                    <option value="BIGBASE_TOKEN">BIGBASE_TOKEN</option>
+                    <option value="LEAKCHECK_KEY">LEAKCHECK_KEY</option>
+                </select>
+                <input type="text" class="input-box" id="tokenValue" placeholder="Новое значение токена...">
+                <button class="btn btn-blue" onclick="saveToken()">💾 Сохранить токен</button>
+            </div>
+        </div>
+
+        <!-- Сессия -->
+        <div class="tab-content" id="tab-session">
+            <div class="card">
+                <div class="card-title">📱 Сессия Telegram</div>
+                <p class="card-text">Отправьте .session файл боту через команду /admin</p>
+                <input type="text" class="input-box" id="phoneNumber" placeholder="+79211234567">
+                <button class="btn btn-blue" onclick="createSession()">🆕 Создать сессию</button>
+            </div>
+        </div>
+
+        <!-- Перезапуск -->
+        <div class="tab-content" id="tab-restart">
+            <div class="card">
+                <div class="card-title">🔄 Перезапуск бота</div>
+                <p class="card-text">Перезапустить бота после изменений</p>
+                <button class="btn btn-red" onclick="restartBot()">🔄 Перезапустить бота</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <a href="index.html" class="nav-item"><span class="icon">🔍</span> Поиск</a>
+        <a href="admin.html" class="nav-item active"><span class="icon">⚙️</span> Админ</a>
+        <a href="profile.html" class="nav-item"><span class="icon">👤</span> Профиль</a>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
