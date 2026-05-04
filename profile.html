@@ -1,0 +1,96 @@
+<!-- ========== profile.html (ПРОФИЛЬ) ========== -->
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>SWILL - Профиль</title>
+    <style>
+        :root {
+            --bg: #0d1117; --card: #161b22; --border: #30363d;
+            --blue: #58a6ff; --green: #238636; --orange: #f0883e;
+            --red: #da3633; --text: #c9d1d9; --sub: #8b949e; --radius: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: var(--bg); color: var(--text);
+            min-height: 100vh; padding-bottom: 70px;
+        }
+        .header {
+            background: linear-gradient(180deg, #1c2333, #161b22);
+            border-bottom: 1px solid var(--border);
+            padding: 20px; text-align: center;
+        }
+        .avatar { width: 60px; height: 60px; background: var(--blue); border-radius: 50%; margin: 0 auto 10px; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+        .title { font-size: 20px; font-weight: 700; }
+        .subtitle { font-size: 12px; color: var(--sub); }
+        .container { padding: 16px; max-width: 600px; margin: 0 auto; }
+        .card {
+            background: var(--card); border: 1px solid var(--border);
+            border-radius: var(--radius); padding: 14px; margin-bottom: 10px;
+        }
+        .card-title { font-size: 14px; font-weight: 600; color: var(--blue); margin-bottom: 8px; }
+        .stat-row { display: flex; justify-content: space-between; padding: 6px 0; border-bottom: 1px solid var(--border); font-size: 13px; }
+        .stat-val { color: var(--green); font-weight: 600; }
+        .nav-bar {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            background: var(--card); border-top: 1px solid var(--border);
+            padding: 10px 16px; display: flex; justify-content: space-around;
+            z-index: 10;
+        }
+        .nav-item { text-align: center; color: var(--sub); font-size: 10px; text-decoration: none; }
+        .nav-item .icon { font-size: 20px; display: block; }
+        .nav-item.active { color: var(--blue); }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="avatar">👤</div>
+        <div class="title">Пользователь</div>
+        <div class="subtitle" id="userId">ID: загрузка...</div>
+    </div>
+
+    <div class="container">
+        <div class="card">
+            <div class="card-title">📊 Статистика</div>
+            <div class="stat-row"><span>Запросов сегодня</span><span class="stat-val" id="todayCount">0</span></div>
+            <div class="stat-row"><span>Всего запросов</span><span class="stat-val" id="totalCount">0</span></div>
+            <div class="stat-row"><span>Лимит</span><span class="stat-val">3/час</span></div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">ℹ️ О сервисе</div>
+            <p style="font-size:12px;color:var(--sub);line-height:1.6">
+                SWILL OSINT v3.0<br>
+                Профессиональный поиск по открытым источникам.<br>
+                Telegram • VK • Email • Телефон • Фото<br><br>
+                © 2026 Swill Way
+            </p>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <a href="index.html" class="nav-item"><span class="icon">🔍</span> Поиск</a>
+        <a href="admin.html" class="nav-item"><span class="icon">⚙️</span> Админ</a>
+        <a href="profile.html" class="nav-item active"><span class="icon">👤</span> Профиль</a>
+    </div>
+
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script>
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        tg.ready();
+        tg.setHeaderColor('#0d1117');
+        tg.setBackgroundColor('#0d1117');
+        
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+            document.getElementById('userId').textContent = 'ID: ' + tg.initDataUnsafe.user.id;
+        }
+        
+        document.getElementById('todayCount').textContent = Math.floor(Math.random() * 10);
+        document.getElementById('totalCount').textContent = Math.floor(Math.random() * 100);
+    </script>
+</body>
+</html>
